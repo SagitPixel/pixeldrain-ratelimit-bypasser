@@ -4,7 +4,7 @@
 
 ## 🤔 The Problem
 
-PixelDrain limits you to 6GB downloads per day. Seriously? In 2025?
+PixelDrain limits you to 6GB downloads per day. Seriously? In 2026?
 
 ## 🎉 The Solution
 
