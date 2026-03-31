@@ -19,7 +19,11 @@ addEventListener('fetch', event => {
       return new Response('Invalid File ID', { status: 400 });
     }
 
-    const targetUrl = `https://pixeldrain.com/api/file/${fileId}?download`;
+    const workers = [
+      "pd1.sriflix.my", "pd2.sriflix.my", "pd3.sriflix.my", "pd4.sriflix.my",
+      "pd5.sriflix.my", "pd6.sriflix.my", "pd7.sriflix.my", "pd8.sriflix.my",
+      "pd9.sriflix.my", "pd10.sriflix.my"
+    ];
     const randomWorker = workers[Math.floor(Math.random() * workers.length)];
     const targetUrl = `https://${randomWorker}/api/file/${fileId}?download`;
 
