@@ -83,7 +83,3 @@ Remember, some heroes don't wear capes. Some just write clever JavaScript that l
 **Made in Ceylon with ❤️ by sh13y** - Where innovation meets determination 🇱🇰
 
 Stay fast, stay curious! 🚀💻
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=sh13y/pixeldrain-ratelimit-bypasser&type=Date)](https://www.star-history.com/#sh13y/pixeldrain-ratelimit-bypasser&Date)
