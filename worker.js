@@ -3,56 +3,47 @@ addEventListener('fetch', event => {
   });
   
   async function handleRequest(request) {
-    // Parse the URL
     const url = new URL(request.url);
-    
-    // Serve HTML for root path
+  
     if (url.pathname === '/') {
       return new Response(getHtmlPage(), {
         headers: { 
           'Content-Type': 'text/html',
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'X-Robots-Tag': 'noindex, nofollow',
           'Access-Control-Allow-Origin': '*'
         }
       });
-    }
-    
-    // Extract file ID, removing leading slash
+   }
+  
     const fileId = url.pathname.slice(1);
-  
-    // Validate file ID
-    if (!fileId) {
-      return new Response('Invalid request', { 
-        status: 400,
-        headers: {
-          'Content-Type': 'text/plain'
-        }
-      });
+    if (!fileId || fileId.length < 5) {
+      return new Response('Invalid File ID', { status: 400 });
     }
-  
-    // List of available workers
+
     const workers = [
-      "pd1.sriflix.my",
-      "pd2.sriflix.my", 
-      "pd3.sriflix.my",
-      "pd4.sriflix.my",
-      "pd5.sriflix.my",
-      "pd6.sriflix.my",
-      "pd7.sriflix.my",
-      "pd8.sriflix.my",
-      "pd9.sriflix.my",
-      "pd10.sriflix.my"
+      "pd1.sriflix.my", "pd2.sriflix.my", "pd3.sriflix.my", "pd4.sriflix.my",
+      "pd5.sriflix.my", "pd6.sriflix.my", "pd7.sriflix.my", "pd8.sriflix.my",
+      "pd9.sriflix.my", "pd10.sriflix.my"
     ];
-  
-    // Pick a random worker
     const randomWorker = workers[Math.floor(Math.random() * workers.length)];
-    
-    // Construct redirect URL
-    const redirectUrl = `https://${randomWorker}/api/file/${fileId}?download`;
+    const targetUrl = `https://${randomWorker}/api/file/${fileId}?download`;
+
+    const modifiedRequest = new Request(targetUrl, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://pixeldrain.com/', 
+        'Accept': '*/*',
+        'Accept-Language': 'en-US,en;q=0.9',
+      }
+    });
+
+    const response = await fetch(modifiedRequest);
   
-    // Return a 302 redirect response
-    return Response.redirect(redirectUrl, 302);
+    const newResponse = new Response(response.body, response);
+    newResponse.headers.set('Access-Control-Allow-Origin', '*');
+    newResponse.headers.set('Content-Disposition', `attachment; filename="pixeldrain_${fileId}"`);
+  
+    return newResponse;
   }
   
   // HTML Page Generation Function
@@ -221,25 +212,25 @@ addEventListener('fetch', event => {
   
       <script data-cfasync="false">
       function convertUrl() {
-          const inputUrl = document.getElementById('inputUrl').value;
-          const match = inputUrl.match(/pixeldrain\\.com\\/u\\/(\\w+)/);
-          
-          if (!match) {
-              alert('Invalid PixelDrain URL!');
+          console.log("开始转换..."); 
+          const input = document.getElementById('inputUrl').value.trim();
+          if (!input) {
+              alert("请输入链接！");
               return;
           }
-          
-          const fileId = match[1];
-          const proxyUrl = \`https://pixeldrain.sriflix.my/\${fileId}\`;
-          
-          document.getElementById('outputUrl').value = proxyUrl;
-      }
-  
-      function copyUrl() {
-          const outputUrl = document.getElementById('outputUrl');
-          outputUrl.select();
-          document.execCommand('copy');
-          alert('Bypassed URL Copied to Clipboard!');
+
+          const parts = input.split('/');
+          let fileId = parts.filter(p => p.length >= 6).pop(); 
+
+          if (fileId) {
+              fileId = fileId.split('?')[0];
+        
+              const proxyUrl = window.location.origin + '/' + fileId;
+              document.getElementById('outputUrl').value = proxyUrl;
+              console.log("转换成功:", proxyUrl);
+          } else {
+              alert("无法识别此链接，请确保链接末尾包含文件 ID");
+          }
       }
 
       function downloadFile() {
